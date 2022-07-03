@@ -1,0 +1,31 @@
+{
+  "name": "jord",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "text based MUD using JavaScript.",
+  "main": "parse.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skyfire222/jord.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/skyfire222/jord/issues"
+  },
+  "homepage": "https://github.com/skyfire222/jord#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-validator": "^6.14.2",
+    "nodemon": "^2.0.18",
+    "telnet": "^0.0.1",
+    "websocket": "^1.0.34",
+    "ws": "^8.8.0"
+  }
+}

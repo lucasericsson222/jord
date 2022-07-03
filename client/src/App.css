@@ -1,0 +1,20 @@
+* {
+  background-color: black;
+  color: white;
+  font-family: monospace;
+}
+.commandInput {
+  position:fixed;
+  bottom: 0;
+  width: 100%;
+  outline: none;
+  height: 5%;
+  background-color:rbga(1,1,1,0);
+  padding-left: 2.5em;
+}
+li {
+  list-style: none;
+}
+ul {
+  margin-bottom: 3%;
+}
