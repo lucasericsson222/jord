@@ -9,10 +9,10 @@ var commands = [
             }
         ],
         handler: ({input}) => {
-            return input;
+            return input + "Echooooo";
         }
     }
-]
+];
 
 var argumentTypes = [
     {
@@ -29,34 +29,33 @@ var argumentTypes = [
             return parseInt(arg);
         }
     }
-]
+];
 
-var cmd = (input) => {
-    // replace any names in command lists with their regex
-    for (let c of commands) {
-        var reg = c.scheme;
-        for(let arg of c.args) {
-            var argumentType = argumentTypes.find(a => a.type === arg.type);
-            if(argumentType == undefined) {
-                console.log("unsupported argumenttype");
-                return;
-            }
+function parse (input) {
+    //check all commands
+    for(let c of commands){
+      var reg = c.scheme
+      for(let arg of c.args){
+        var argumentType = argumentTypes.find(a => a.type === arg.type);
+        if(argumentType == undefined){
+          console.log("unsupported argumenttype")
+          return;
         }
-        reg = reg.replace("$" + arg.name, argumentType.replace);
-    
-        var regExp = new RegExp(reg);
-        var match = input.match(regExp);
-        // interpret into a function call
-        if(match) {
-            match.shift(); // I'm currently assuming this get's rid of the command's name
-            var paramobj = {};
-            for(var i = 0; i < c.args.length; i++) { //loop through all arguments
-                var argumentType = argumentTypes.find(a => a.type === c.args[i].type);
-                paramObj[c.args[i].name] = argumentType.transform(match[i]);
-            }
-            return c.handler(paramObj);
+        reg = reg.replace("$" + arg.name, argumentType.replace)
+      }
+      var regExp = new RegExp(reg)
+      var match = input.match(regExp)
+      if(match){
+        match.shift()
+        var paramObj = {}
+        for(var i = 0; i < c.args.length; i++){
+          var argumentType = argumentTypes.find(a => a.type === c.args[i].type);
+          paramObj[c.args[i].name] = argumentType.transform(match[i])
         }
+        return c.handler(paramObj)
+      }
     }
-    console.log("no matching command found");
+    console.log("no matching command found")
+    return "No matching command found";
 }
-
+export {parse}
