@@ -1,6 +1,5 @@
 {
   "name": "jord",
-  "type": "module",
   "version": "1.0.0",
   "description": "text based MUD using JavaScript.",
   "main": "parse.js",

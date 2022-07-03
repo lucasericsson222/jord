@@ -1,19 +1,3 @@
-var commands = [
-    {
-        name: "echo",
-        scheme: "echo $input",
-        args: [
-            {
-                name: "input",
-                type: "string",
-            }
-        ],
-        handler: ({input}) => {
-            return input + "Echooooo";
-        }
-    }
-];
-
 var argumentTypes = [
     {
         type: "string",
@@ -31,7 +15,7 @@ var argumentTypes = [
     }
 ];
 
-function parse (input) {
+function parse (input, commands) {
     //check all commands
     for(let c of commands){
       var reg = c.scheme
@@ -55,7 +39,7 @@ function parse (input) {
         return c.handler(paramObj)
       }
     }
-    console.log("no matching command found")
+    console.log("no matching command found");
     return "No matching command found";
 }
-export {parse}
+module.exports = {parse}
