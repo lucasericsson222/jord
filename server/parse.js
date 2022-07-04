@@ -1,3 +1,37 @@
+const {WebSocketServer} = require( 'ws');
+const WebSocket = require('ws');
+var commands = [
+    {
+        name: "echo",
+        scheme: "echo $input",
+        args: [
+            {
+                name: "input",
+                type: "string",
+            }
+        ],
+        handler: ({input, wss, ws}) => {
+            ws.send(input);
+        }
+    },
+    {
+        name: "say",
+        scheme: "say $input",
+        args: [
+            {
+                name: "input",
+                type: "string",
+            }
+        ],
+        handler: ({input, wss, ws}) => {
+            wss.clients.forEach(function each(client) {
+                if (client.readyState === WebSocket.OPEN) {
+                  client.send(input);
+                }
+            });
+        }
+    }
+];
 var argumentTypes = [
     {
         type: "string",
@@ -15,7 +49,7 @@ var argumentTypes = [
     }
 ];
 
-function parse (input, commands) {
+function parse (input, wss, ws) {
     //check all commands
     for(let c of commands){
       var reg = c.scheme
@@ -36,6 +70,8 @@ function parse (input, commands) {
           var argumentType = argumentTypes.find(a => a.type === c.args[i].type);
           paramObj[c.args[i].name] = argumentType.transform(match[i])
         }
+        paramObj["ws"] = ws;
+        paramObj["wss"] = wss;
         return c.handler(paramObj)
       }
     }
