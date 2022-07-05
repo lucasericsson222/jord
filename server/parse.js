@@ -1,5 +1,4 @@
-const {WebSocketServer} = require( 'ws');
-const WebSocket = require('ws');
+const {wss} = require('./webSocket.js');
 var commands = [
     {
         name: "echo",
@@ -10,7 +9,7 @@ var commands = [
                 type: "string",
             }
         ],
-        handler: ({input, wss, ws}) => {
+        handler: ({input, ws}) => {
             ws.send(input);
         }
     },
@@ -23,12 +22,8 @@ var commands = [
                 type: "string",
             }
         ],
-        handler: ({input, wss, ws}) => {
-            wss.clients.forEach(function each(client) {
-                if (client.readyState === WebSocket.OPEN) {
-                  client.send(input);
-                }
-            });
+        handler: ({input, ws}) => {
+           wss.broadcast(input);
         }
     }
 ];
@@ -49,7 +44,7 @@ var argumentTypes = [
     }
 ];
 
-function parse (input, wss, ws) {
+function parse (ws, input) {
     //check all commands
     for(let c of commands){
       var reg = c.scheme
@@ -71,11 +66,10 @@ function parse (input, wss, ws) {
           paramObj[c.args[i].name] = argumentType.transform(match[i])
         }
         paramObj["ws"] = ws;
-        paramObj["wss"] = wss;
         return c.handler(paramObj)
       }
     }
     console.log("no matching command found");
-    return "No matching command found";
+    wss.send(ws, "No matching command found");
 }
 module.exports = {parse}
