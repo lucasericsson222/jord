@@ -1,4 +1,5 @@
 const {wss} = require('./webSocket.js');
+const {worldData} = require('./database/dataLoad');
 var commands = [
     {
         name: "echo",
@@ -11,6 +12,16 @@ var commands = [
         ],
         handler: ({input, ws}) => {
             ws.send(input);
+        }
+    },
+    {
+        name: "look",
+        scheme: "look",
+        args: [],
+        handler: ({ws}) => {
+            worldData.loadRoom([0,0,0]).then((room) => {
+                ws.send(room.display());
+            })
         }
     },
     {

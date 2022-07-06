@@ -22,6 +22,7 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-validator": "^6.14.2",
+    "mongodb": "^4.7.0",
     "nodemon": "^2.0.18",
     "telnet": "^0.0.1",
     "websocket": "^1.0.34",
