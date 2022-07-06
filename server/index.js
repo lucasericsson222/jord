@@ -10,7 +10,17 @@ wss.on('connect', function connection(ws) {
     });
 });
 */
-wss.on('newMessage', function(ws, data) {
-    console.log('received: ' + data);
-    parse(ws, data);
+wss.on("clientConnect", function(ws) {
+    wss.send(ws, "Please enter the name of the character you wish to play as:");
 });
+wss.on('newMessage', function(ws, data) {
+    if (ws.loggedIn) {
+        console.log('received: ' + data);
+        parse(ws, data);
+    } else {
+        ws.controllingPlayer = data;
+        wss.send(ws, "You are now logged in as: " + data);
+        ws.loggedIn = true;
+    }
+});
+

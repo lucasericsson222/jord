@@ -11,7 +11,7 @@ var commands = [
             }
         ],
         handler: ({input, ws}) => {
-            ws.send(input);
+            wss.send(ws, input);
         }
     },
     {
@@ -19,9 +19,28 @@ var commands = [
         scheme: "look",
         args: [],
         handler: ({ws}) => {
-            worldData.loadRoom([0,0,0]).then((room) => {
-                ws.send(room.display());
-            })
+            worldData.getPlayer({name:ws.controllingPlayer}).then( (player) => {           
+                worldData.loadRoom({id:player.room}).then((room) => {
+                    wss.send(ws, room.display());
+                    wss.send(ws, player.display(ws));
+                });
+            });
+        }
+    },
+    {
+        name: "north",
+        scheme: "north",
+        args: [],
+        handler: ({ws}) => {
+            worldData.getPlayer({name:ws.controllingPlayer}).then( (player) => {           
+                worldData.loadRoom({id:player.room}).then((room) => {
+                    if (room.exits.north === undefined) {
+                        wss.send(ws, "Invalid Direction");
+                    } else {
+                        worldData.updatePlayer({id:player.id,room:room.exits.north});
+                    }
+                });
+            });
         }
     },
     {

@@ -1,18 +1,25 @@
 const roomClass = require('./room');
+const playerClass = require('./player.js');
 const {MongoClient, MONGO_CLIENT_EVENTS} = require('mongodb');
+const { client } = require('websocket');
 
 const uri = "mongodb://localhost:27017";
 
 
 class dataLoad {
-    async loadRoom(roomCoords) {
+    async loadRoom(input) {
+        let query;
+        if(input.coords === undefined) {
+            query = {_id:input.id};
+        } else {
+            query = {coords:input.coords}
+        }
         let loadedRoom;
         const client = new MongoClient(uri);
         try {
             const database = client.db('jord');
             const rooms = database.collection('rooms');
 
-            const query = {coords: roomCoords};
             const room = await rooms.findOne(query);
             loadedRoom = new roomClass.room(room._id,room.coords, room.name,room.desc,room.exits);
         } finally {
@@ -20,16 +27,50 @@ class dataLoad {
         }
         return loadedRoom;
     }
+    async getPlayer(input) {
+        let loadedPlayer;
+        let query;
+        if (input.name === undefined) {
+            if (input._id === undefined) {
+                query = {room:input.room};
+            } else {
+                query = {_id:input.id};
+            }
+        } else {
+            query = {name:input.name};
+        }
+        const client = new MongoClient(uri);
+        try {
+            const database = client.db('jord');
+            const players = database.collection('players');
+
+            const player = await players.findOne(query);
+            loadedPlayer = new playerClass.player(player._id,player.name,player.room);
+        } finally {
+            await client.close();
+        }
+        return loadedPlayer;
+    }
+    async updatePlayer(input) {
+        const client = new MongoClient(uri);
+        try {
+
+            const database = client.db('jord');
+            const players = database.collection("players");
+
+            const filter = {_id:input.id};
+            delete input.id;
+            const updateDoc = {
+                $set: input
+            };
+            const options = {}
+            const result = await players.updateOne(filter, updateDoc,options);
+            return result;
+        } finally {
+            await client.close();
+        }
+    }
     async saveRoom(room) {
-
-    }
-    // everything interactable is an entity
-    // monsters, players, items, objects are all subsets
-    
-    async loadEntity() {
-
-    }
-    async saveEntity() {
 
     }
 }

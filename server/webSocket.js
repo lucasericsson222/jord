@@ -8,6 +8,7 @@ class netInterface extends events {
         super();
         this.#wss = new WebSocketServer(input);
         this.#wss.on('connection', (ws) => {
+            ws.loggedIn = false;
             this.emit('clientConnect', ws);
             ws.on('message', (message) => {
                 this.send(ws, "> " + message.toString()); //this just makes it so that the message appears back in the users stream
