@@ -45,7 +45,8 @@ class dataLoad {
             const players = database.collection('players');
 
             const player = await players.findOne(query);
-            loadedPlayer = new playerClass.player(player._id,player.name,player.room);
+            
+            loadedPlayer = new playerClass.player(player);
         } finally {
             await client.close();
         }
@@ -68,6 +69,23 @@ class dataLoad {
             return result;
         } finally {
             await client.close();
+        }
+    }
+    async getPlayers() {
+        const client = new MongoClient(uri);
+        var playersFinal = [];
+        try {
+            const database = client.db('jord');
+            const players = database.collection("players");
+
+            let playersData = await players.find();
+            await playersData.forEach((playerData)=> {
+                let newPlayer = new playerClass.player(playerData);
+                playersFinal.push(newPlayer);
+            });
+        } finally {
+            await client.close();
+            return playersFinal;
         }
     }
     async saveRoom(room) {

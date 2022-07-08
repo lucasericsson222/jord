@@ -22,7 +22,11 @@ var commands = [
             worldData.getPlayer({name:ws.controllingPlayer}).then( (player) => {           
                 worldData.loadRoom({id:player.room}).then((room) => {
                     wss.send(ws, room.display());
-                    wss.send(ws, player.display(ws));
+                    worldData.getPlayers().then((players) => {
+                        players.forEach((person) => {
+                            wss.send(ws,person.display(ws));
+                        });
+                    });
                 });
             });
         }
@@ -65,7 +69,7 @@ var commands = [
 var argumentTypes = [
     {
         type: "string",
-        replace: "([a-z]+)",
+        replace: "(.*)",
         transform: (arg) => {
             return arg;
         }
