@@ -28,16 +28,21 @@ var commands = [
         }
     },
     {
-        name: "north",
-        scheme: "north",
-        args: [],
-        handler: ({ws}) => {
+        name: "move",
+        scheme: "$input",
+        args: [
+            {
+                name: "input",
+                type: "direction",
+            }
+        ],
+        handler: ({ws,input}) => {
             worldData.getPlayer({name:ws.controllingPlayer}).then( (player) => {           
                 worldData.loadRoom({id:player.room}).then((room) => {
-                    if (room.exits.north === undefined) {
+                    if ((room.exits)[input] === undefined) {
                         wss.send(ws, "Invalid Direction");
                     } else {
-                        worldData.updatePlayer({id:player.id,room:room.exits.north});
+                        worldData.updatePlayer({id:player.id,room:(room.exits)[input]});
                     }
                 });
             });
@@ -70,6 +75,13 @@ var argumentTypes = [
         replace: "([0-9]+)",
         transform: (arg) => {
             return parseInt(arg);
+        }
+    },
+    {
+        type: "direction",
+        replace: "(north|south|east|west|up|down)",
+        transform: (arg) => {
+            return arg;
         }
     }
 ];
