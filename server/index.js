@@ -1,17 +1,10 @@
 const {wss} = require('./webSocket.js');
 const {parse} = require( './parse.js');
+require("./database/database.js");
 
-/*
-wss.on('connect', function connection(ws) {
-    wss.on('message', function message(data) {
-        console.log('received: %s', data);
-        wss.send("> " + data.toString());
-        parse(data.toString(), ws);
-    });
-});
-*/
+
 wss.on("clientConnect", function(ws) {
-    wss.send(ws, "Please enter the name of the character you wish to play as:");
+    wss.send(ws, "@G Please FF5733 enter the name of the character you wish to play as:");
 });
 wss.on('newMessage', function(ws, data) {
     if (ws.loggedIn) {
